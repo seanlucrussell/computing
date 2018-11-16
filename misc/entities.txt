@@ -1,0 +1,66 @@
+Entity System:
+
+Entities are things that can send and receive messages, and do some processing.
+
+Entities could be things like agents, or things like environments. All interaction between two entities are facilitated by messages.
+
+For example, consider 1 agent acting within an environment. The agent receives messages from the environment as senses, and takes actions by sending messages to the environment. The environment handles how actions pan out, like what occurs from an action. The environment can also open a new communication channel between it and the agent, indicating that the agent has a new set of actions it could take. Likewise it could open a new sensory channel as well.
+
+So there would be message classes, which could represent senses or they could represent actions. And there would be entity classes, which represent objects that can react to information and do some sort of processing on it.
+
+how are new entities created? and how do entities know about each other? perhaps there is some sort of master entity that everyone knows, and can create/destroy entities, and can tell entities about each other. Or perhaps there is just some 'environment' that is a separate thing and acts as a host to all entities, and responds to their messages, and acts as a medium through which messages can pass. Then any entity could add a new entity to the environment, and each entity sends and receives messages to the environment alone, who then decides where all they get delivered.
+
+relation between this and functional programming and named data networking?
+
+example
+________________________________________________________________________________________________
+
+entity Goblin:
+	start:
+		environment = get_message()
+	update:
+		goblin_detected = get_message()
+		if not goblin_detected:
+			send_message(environment,spawn_goblin)
+
+entity Environment:
+	update:
+		message = get_message()
+		while message:
+			if message == spawn_goblin:
+				create_new_goblin()
+			if another_goblin within detection_radius:
+				send_message(goblin,goblin_detected)
+			message = get_message()
+	create_new_goblin():
+		new_goblin = create_entity(Goblin)
+		send_message(new_goblin,environment)
+
+entities = [environment]
+
+def create_entity(type):
+	new_entity = type()
+	entities.append(new_entity)
+	return
+
+class Entity():
+	messages = []
+	def send_message(self,entity,message):
+		entity.messages.append(message)
+	def get_message(self):
+		return messages.pop()
+
+def main_loop():
+	while True:
+		for entity in entities:
+			entity.update()
+
+each entity has a queue of messages, parses them one at a time. messages might include source or might not.
+each entity can send messages. it must specify a destination and a message to send.
+each entity can create new entities. creating a new entity adds it to the world and returns the new entity.
+
+what order do updates happen in?
+
+new thing gets start called at the same time as update, but start only happens once.
+
+idea for easier synchronization: messages don't get sent until the end of the update call cycle. that way everyone gets to respond to messages at essentially the same time.

@@ -1,0 +1,23 @@
+SQL Notes
+
+get everything from a table
+SELECT * FROM table;
+
+get only specific columns from a table
+SELECT columnOne, columnTwo FROM table;
+
+get only unique items from a column
+SELECT DISTINCT columnOne FROM table;
+
+get number of items from a column
+SELECT COUNT (DISTINCT columnOne) FROM table;
+
+get rows from a table that have the specified value in the column
+SELECT * FROM table WHERE column='Value'
+
+basic logic operations
+SELECT * FROM table WHERE columnOne='Value' AND (columnTwo > 0 OR NOT columnThree=5)
+
+order the result
+SELECT * FROM table ORDER BY columnOne,columnTwo
+

@@ -1,0 +1,298 @@
+
+define a -> int : return 12
+define b -> int : return 4
+define c -> int : return sum ( a() b() )
+
+print ( c() )
+
+So we need a concept of types, and some primitive operations. No variables, everything is a function.
+
+Idea for interfaces: An interface is a collection of mappings that have certain properties. A type must have all those mappings to support an interface.
+
+interface shape :
+	define area shape -> int
+	define perimeter shape -> int
+
+define circle is shape:
+	define radius circle -> real
+	define x circle -> real
+	define y circle -> real
+	define make_circle (real,real,real) -> circle
+
+define circle (real,real,real) -> (function,function,function) :
+	return 
+
+define test_circle -> circle : return 
+
+define radius circle -> real : 
+	circle
+
+radius ( test_circle() )
+test_circle ( radius() )
+
+define radius (real,real,real) -> real:
+	return
+
+
+A circle is a set of operations specifying a radius, x coordinate, and y coordinate. So to define a specific circle we define those operations.
+
+So a general circle is any type of object that has a radius, x coordinate, and y coordinate. So to make a specific circle it is enough to have a general mapping of three real values into three functions
+
+Defining a circle as a general type involves defining 3 functions for accessing the radius, x, and y components of a circle and 1 function for creating a circle. More could be added for editing the values of things.
+
+Mappings can accept either functions or primitives as arguments, and return either functions or primitives.
+
+How on earth we gonna do loops? Recursion maybe?
+
+
+Really the idea is mapping a sequence of symbols to another sequence of symbols
+
+Goal is to have entire language description in one page, standard libraries would be longer but wouldn’t be a key syntactic part. Want bootstrap able language that could be implemented in just a few lines of machine language, then have extensive libraries built on top to make it work.
+
+
+syntax goes like this:
+
+define INPUTS -> OUTPUTS:
+	PROCESS
+
+INPUTS and OUTPUTS can be anything, process describes how to transition from inputs to outputs. This can be used for variable declaration:
+
+define hello -> string:
+	return “Hello world!”
+
+INPUTS can include placeholders, so syntax will look good like
+
+define *number + *number:
+	
+
+define for VAR from START to END do ROUTINE :
+	define loop index:
+		if index 
+		execute(ROUTINE)
+		loop(index - 1)
+	if VAR < END:
+		execute(ROUTINE)
+	else
+
+for i from 1 to 10 do (
+	print (i)
+)
+
+// THIS TURNS THE SYMBOL hello INTO THE STRING “Hello world”
+define hello -> “Hello world”
+
+print(hello)
+
+define fibonacci number ->
+	if number == 0 or number == 1
+		1
+	else
+		fibonacci (number - 1) + fibonacci (number - 2)
+	
+
+need:
+primitive data types - numbers, strings, tuples
+primitive functions - mapping of input to output (all functions are anonymous until named like variables)
+named variables
+tools for creating new syntax
+
+another thing for the language: want to support typing by operations, rather than inheritance. For instance, if there is some function that prints information about a shape, rather than enforcing that an object of type ‘shape’ gets passed to it, it would enforce that the object support the ‘area()’ operation
+
+define “ “ -> 0
+define “ string “ -> string
+define string -> string or string + char
+define char -> a or b or c or d or ... or z
+define a -> 56
+define b -> 57
+define c -> 58
+...
+define z -> 79
+
+language maps symbol patterns into behaviors.
+
+
+NUMBER = (INTEGER), (RATIONAL), (REAL)
+CONDITIONAL = (if EXECUTION then EXECUTION else EXECUTION)
+PRIMITIVE = (NUMBER), (STRING), (CONDITIONAL), (BOOLEAN)
+EXECUTION = (execution…), (define PATTERN -> EXECUTION), (PRIMITIVE)
+
+TYPE = int, float, string, char, array
+VARIABLE = TYPE SYMBOL
+SYNTAX_ATOM = VARIABLE, SYMBOL
+SYNTAX = SYNTAX_ATOM...
+BEHAVIOR = 
+DEFINITION = define SYNTAX -> BEHAVIOR
+
+each define creates its own syntax universe, where certain variables exist as defined by the VARIABLE form, and also the syntax universe surrounding the define. New things can be added to a syntax universe using the define expression, and there is a default syntax universe.
+
+calculator stuff to start
+
+PRIMITIVES:
+input -> NUMBER
+NUMBER + NUMBER -> NUMBER
+NUMBER - NUMBER -> NUMBER
+NUMBER * NUMBER -> NUMBER
+NUMBER / NUMBER -> NUMBER
+number is a float, all variables can also have value of ‘undefined’ to deal with errors
+output NUMBER ->
+define SYNTAX -> EXPRESSION
+adds SYNTAX to the syntax universe
+
+
+define f (NUMBER x) ->
+	(2 * x) + 3
+
+print f(5)
+print f(input)
+
+define test ->
+	define f(NUMBER x) ->
+		(2 * x) + 3
+	and
+	print f(input)
+
+
+NUMBER = 1,2,3,4,5,...,undefined
+ADD = NUMBER + NUMBER
+MULTIPLY = NUMBER * NUMBER
+MATH = ADD, MULTIPLY
+DEFINITION = define SYNTAX -> EXPRESSION
+INPUT = input
+OUTPUT = output NUMBER
+PRIMITIVE = MATH, DEFINITION, INPUT, OUTPUT
+NOOP = OUTPUT, DEFINITION
+EXPRESSION = NOOP and EXPRESSION, PRIMITIVE
+
+maybe symbols shouldn’t be the smallest thing possible? For instance, if an undefined symbol is discovered, there could be parse rules for such undefined symbols.
+
+how do we deal with ambiguity btw?
+
+evaluating an expression:
+for each symbol in the expression:
+	check if the expression is an atom
+		if so, evaluate the atom
+	check if the expression is in the current syntax universe
+		if so, evaluate the expression
+	otherwise, error
+
+
+meaning of whole language:
+define SYNTAX -> BEHAVIOR
+when you see SYNTAX, replace it with BEHAVIOR
+
+when this is seen:
+define SYNTAX -> EXPRESSION
+the syntax universe is updated. EXPRESSION is not evaluated (maybe checked for correctness though?)
+then, when some other expression is encountered that uses SYNTAX, the EXPRESSION is evaluated
+
+define f int a -> a + 1
+
+define a -> 3
+a
+
+within each define is its own syntax universe
+
+(define (a) (3))
+(define (add a b) (+ a b))
+
+(add 4 2)
+
+->
+
+(do
+	(define (a) (4))
+	(define (b) (2))
+	(+ a b))
+
+(define
+	(fibonacci n)
+	(if
+		(or (= n 0) (= n 1)
+		(1)
+		(+ (fibonacci (- n 1)) (fibonacci (- n 2)))))
+
+(fibonacci 4)
+
+->
+
+(do
+	(define (n) (4))
+	(if
+		(or (= n 0) (= n 1)
+		(1)
+		(+ (fibonacci (- n 1)) (fibonacci (- n 2)))))
+
+
+all expressions either a function or a primitive
+primitives include numbers, strings, and tuples
+a number is a number
+strings are characters surrounded by quotes
+tuples are a sequence of symbols surrounded by square brackets
+functions are things of the form
+define fibonacci (0) = 1
+define fibonacci (integer i) = fibonacci(i-1) + fibonacci(i-2)
+
+types exists, but not as normal. A type is a specification for a collection of functions essentially
+
+// shape is a tuple of length 2, 1st index corresponds to area, 2nd to perimeter
+type shape:
+	define area(shape s) = s(0)
+	define perimeter(shape s) = s(1)
+
+// circle is a tuple of length 3
+// 1st index is radius, 2nd index is x coordinate, 3rd index is y coordinate
+type circle is shape:
+	define create_circle(number radius, number x, number y) = [radius,x,y]
+	define radius(circle c) = c(0)
+	define position(circle c) = [c(1),c(2)]
+	define area(circle c) = pi * radius(c)^2
+	define perimeter(circle c) = 2 * pi * radius(c)
+
+ideas: a getter is something that takes one object and returns info about it.
+
+// define a thing
+type numeric:
+	define add(numeric a, numeric b) = a + b
+	define invert(numeric a) = -a
+
+// now a function that subtracts numerics can be defined for all numeric types
+// which only requires that add and invert are defined for these types
+define subtract(numeric a, numeric b) = add(a,invert(b))
+
+type list_item:
+	next(list_item) = list_item
+
+type list:
+	start(list) = list_item
+
+define foreach (list l, function(list_item)=None f) = 
+	define rec(None) = None
+	define rec(list_item i) =
+		f(i)
+		rec(next(list_item))
+		None
+	rec(start(l))
+
+a type is really just a collection of supported functions
+
+define list() = [start(list)=list_item]
+define list_item() = [next(list_item)=list_item]
+
+when checking if something is of a particular type, need to check if it has supported functions
+actually, what is the point of types? types aren't strictly necessary, so why is it so important to have them?
+types provide interfaces. a type is a promise that certain behavior is supported, and having that promise ensures that you can run code that relies on that promise with no doubts.
+
+type rectangle:
+	width(rectangle r) = r(0)
+	height(rectangle r) = r(1)
+
+type square is a rectangle:
+	width(square s) = s(0)
+	height(square s) = s(1)
+
+a tuple is a collection of functions, or rather a single function, that takes a positive integer as input and returns the information at that index as output, or none if that doesn't exist
+
+how about failure? there could exist a NULL type that is every other type at once, and when primitive ops encounter NULL they return NULL. So then functions built on top of them return NULL, and only at the base level does NULL need to be dealt with.
+
+define example_circle () = create_circle(4,0,-1)
+print(radius(example_circle))

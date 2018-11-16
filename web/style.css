@@ -1,0 +1,37 @@
+:root {
+    --background-color: #333;
+    --primary-color: silver;
+    --secondary-color: #777;
+    --page-width: 80%;
+}
+body {
+    color: var(--primary-color);
+    background-color: var(--background-color);
+    font-size: xx-large;
+    font-family: palatino;
+    width: var(--page-width);
+    margin: auto;
+}
+.navlink {
+    color: var(--secondary-color);
+    font-weight: bold;
+    text-decoration: none;
+    letter-spacing: 3px;
+    padding: 10px;
+    margin-right: 10px;
+    margin-left: 10px;
+    //text-shadow: 0px 0px 40px #000;
+}
+.navbar {
+    cursor: default;
+    background-color: var(--background-color);
+    border-bottom: 1px solid var(--secondary-color);
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    width: var(--page-width);
+    padding: 10px;
+}
+.contents {
+    padding-top:100px;
+}

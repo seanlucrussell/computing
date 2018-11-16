@@ -1,0 +1,31 @@
+; example definition of a tree
+(define root 
+  '("R" 100 280
+     ("R" 100 180
+       ("L" 120 140 160 180))
+     ("R" 220 280
+       ("L" 220 240 260 280))))
+
+; checks if the passed node is a root node
+(define (is-root node)
+  (eq? (car node) "R"))
+
+; checks if the value is in the range specified by the root node
+(define (in-range value node)
+  (<= (cadr node) value (caddr node)))
+
+; takes a list of nodes, searches recursively on them
+(define (search-nodes value nodes)
+  (if (eq? nodes '())
+    #f
+    (if (search value (car nodes))  
+      #t
+      (search-nodes value (cdr nodes)))))
+
+; recursively searches a given node for a given value
+(define (search value node)
+  (if (is-root node)
+    (if (in-range value node)
+      (search-nodes value (cdddr node))
+      #f)
+    (member value node)))
