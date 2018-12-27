@@ -46,4 +46,3 @@ for i in range(iterations):
     w1 += learning_rate * delta_w1
     if i % 100 == 0:
         print(prediction.transpose())
-

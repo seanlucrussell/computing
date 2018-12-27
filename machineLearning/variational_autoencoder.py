@@ -1,18 +1,11 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
 from tensorflow.keras.layers import Lambda, Input, Dense
 from tensorflow.keras.models import Model
 from tensorflow.keras.datasets import mnist
-from tensorflow.keras.losses import mse, binary_crossentropy
-from tensorflow.keras.utils import plot_model
+from tensorflow.keras.losses import binary_crossentropy
 from tensorflow.keras import backend as K
 
-import tensorflow as tf
-from tensorflow import keras
-import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.widgets import Slider
 
 def sampling(args):
     z_mean, z_log_var = args
@@ -35,7 +28,6 @@ batch_size = 128
 latent_dim = 4
 epochs = 50
 
-# VAE model = encoder + decoder
 # build encoder model
 inputs = Input(shape=input_shape, name='encoder_input')
 x = Dense(intermediate_dim, activation='relu')(inputs)
@@ -57,7 +49,7 @@ outputs = decoder(encoder(inputs)[2])
 vae = Model(inputs, outputs, name='vae_mlp')
 models = (encoder, decoder)
 data = (x_test, y_test)
-# VAE loss = mse_loss or xent_loss + kl_loss
+# VAE loss = crossentropy_loss + kl_loss
 reconstruction_loss = binary_crossentropy(inputs,outputs)
 reconstruction_loss *= original_dim
 kl_loss = 1 + z_log_var - K.square(z_mean) - K.exp(z_log_var)
@@ -74,8 +66,6 @@ except:
             batch_size=batch_size,
             validation_data=(x_test, None))
     vae.save_weights('vae_mnist.h5')
-
-from matplotlib.widgets import Slider
 
 start = 0.0
 fig, ax = plt.subplots()
@@ -101,3 +91,4 @@ for i in range(latent_dim):
     sliders.append(slider)
 
 plt.show()
+
