@@ -1,0 +1,9 @@
+<HTML>
+  <div id="demo"></div>
+  <script>
+    const http = new XMLHttpRequest()
+    http.open("GET", "http://127.0.0.1:8080")
+    http.send()
+    http.onload = () => document.getElementById("demo").innerHTML = http.responseText
+  </script>
+</HTML>
